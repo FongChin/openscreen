@@ -67,4 +67,4 @@ function sendResponse( sessionId, response, id ){
   response.render( "room", data );
 }
 
-app.listen( 3000 );
+app.listen( process.env.PORT || 3000 );
