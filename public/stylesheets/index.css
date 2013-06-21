@@ -1,0 +1,45 @@
+body{
+  background-color: #f4f4f4;
+}
+#container{
+  width: 960px;
+  border: 1px solid #e2e2e2;
+  margin: 50px auto;
+  -moz-box-shadow: 0 0 6px 1px #bbb;
+  -webkit-box-shadow: 0 0 6px 1px #bbb;
+  box-shadow: 0 0 6px 1px #bbb;
+  padding: 30px;
+}
+#openscreen{
+  width: 400px;
+  height: 100px;
+  background-image: url("/images/openscreenlogo.png");
+  background-repeat: no-repeat;
+  margin: auto;
+}
+#tbandslLogo{
+  width: 600px;
+  height: 70px;
+  background-image: url("/images/otandsl.png");
+  margin: 40px auto;
+}
+#description{
+  margin: 25px;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 35px;
+  color: #333;
+  text-align: center;
+}
+foorter, #socialContainer{
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+#socialButtons{
+  margin-top: 5px;
+  list-style: none;
+}
+footer{
+  border-top: 1px solid #e0e0e0;
+  margin-top: 30px;
+}
+li { display: inline-block; margin-right: 20px; }

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rooms</title>
+  <script src="http://static.opentok.com/webrtc/v2.0/js/TB.min.js" ></script>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
+  <script src="/javascripts/jquery1.7.1.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/javascripts/handlebars.js" ></script>
+  <script src="http://www.screenleap.com/js/screenleap-api.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
+  <link rel="stylesheet" href="/stylesheets/room.css" />
+</head>
+<body>
+  <center><h2>Share the url with your friend to chat <pre style="width: 400px;" id="url"></pre></h2></center>
+
+  <div id="wrapper">
+    <div class="left">
+    <button class="btn" onclick="session.disconnect();">stop publishing</button>
+      <div id="myPublisherDiv"></div>
+      <div id="videoDiv" ></div>
+    </div>
+    <div id="screenleapExtensionProperties" style="display:none;"></div>
+    <div class="right">
+      <div id="shareButtonContainer"></div>
+      <div id="stopButtonContainer"></div>
+      <div id="iframeDiv"></div>
+    </div>
+    <div style="clear: both;"></div>
+  </div>
+
+  <script id="beforeScreenShare" type="text/x-handlebars-template">
+      <button class="btn" onclick="shareScreenApplet();" >Share screen using screenleap chrome extension</button>
+  </script>
+
+  <script id="screenShareIframe" type="text/x-handlebars-template">
+      <iframe src="{{screenLeapViewerUrl}}" width="720px" height="700px">
+          <p>Your browser does not support iframes.</p>
+        </iframe>
+  </script>
+
+  <script type="text/javascript">
+    
+    // detect window close so screen share can be stopped if active
+    window.onbeforeunload = function (e) {
+      var e = e || window.event;
+
+      if (e) {
+        screenleap.checkIsSharing( function(){
+          // screenleap hasn't implemented this yet.
+          console.log("screenleap hasn't implemented this yet.");
+          // screenleap.stopSharing();
+        }, function(){
+          // screen is not being shared. 
+          console.log("screen is not being shared.");
+        },
+        "EXTENSION");
+      }
+    };
+  
+    var beforeScreenShareSource = $("#beforeScreenShare").html();
+    var template1 = Handlebars.compile(beforeScreenShareSource);
+    var htmlForScreenShareButton = template1();
+
+    document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton;
+    apiKey = "<%= OTkey %>";
+    token = "<%= token %>";
+    sessionId = "<%= sessionId %>";
+    roomId = "<%= roomId %>";
+    document.getElementById("url").textContent = window.location.href;
+  </script>
+  <script src="/javascripts/room.js" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "openscreen",
+  "version": "0.0.1",
+  "dependencies":{
+    "express": "",
+    "ejs": "",
+    "opentok": "0.3.2"
+  }
+}
+
