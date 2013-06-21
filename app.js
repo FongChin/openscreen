@@ -23,6 +23,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/room/:id', function(req, res){
+  console.log( process.env.OTKEY );
   if ( urlSessions[ req.params.id ] == undefined ){
     opentok.createSession(function(result){
       sessionId = result;
