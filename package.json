@@ -5,6 +5,10 @@
     "express": "",
     "ejs": "",
     "opentok": "0.3.2"
+  },
+  "engines":{
+    "node": "0.10.12",
+    "npm": "1.2.30"
   }
 }
 
