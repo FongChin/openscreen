@@ -7,14 +7,16 @@
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
   <script src="/javascripts/jquery1.7.1.js" type="text/javascript"></script>
+  <script src="/javascripts/bootstrap.min.js" type="text/javascript"></script>
   <script type="text/javascript" src="/javascripts/handlebars.js" ></script>
   <script src="http://www.screenleap.com/js/screenleap-api.js" type="text/javascript"></script>
   <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
   <link rel="stylesheet" href="/stylesheets/room.css" />
 </head>
 <body>
-  <center><h2>Share the url with your friend to chat <pre style="width: 400px;" id="url"></pre></h2></center>
-
+  <div id="alertMsgBox" class="alert alert-success">
+  </div>
+  <center><h2>Share the url with your friend to chat <pre style="width: 550px;" id="url"></pre></h2></center>
   <div id="wrapper">
     <div class="left">
     <button class="btn" onclick="session.disconnect();">stop publishing</button>
@@ -40,24 +42,16 @@
         </iframe>
   </script>
 
+
   <script type="text/javascript">
     
     // detect window close so screen share can be stopped if active
-    window.onbeforeunload = function (e) {
-      var e = e || window.event;
+    // window.onbeforeunload = function (e) {
+    //   var e = e || window.event;
 
-      if (e) {
-        screenleap.checkIsSharing( function(){
-          // screenleap hasn't implemented this yet.
-          console.log("screenleap hasn't implemented this yet.");
-          // screenleap.stopSharing();
-        }, function(){
-          // screen is not being shared. 
-          console.log("screen is not being shared.");
-        },
-        "EXTENSION");
-      }
-    };
+    //   alert("stop sharing");
+      
+    // };
   
     var beforeScreenShareSource = $("#beforeScreenShare").html();
     var template1 = Handlebars.compile(beforeScreenShareSource);

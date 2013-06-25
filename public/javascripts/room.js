@@ -35,6 +35,7 @@ function streamCreatedHandler(event) {
 var roomDataRef = new Firebase( "https://openscreen.firebaseio.com/" + roomId );
 var lastViewerUrlQuery = roomDataRef.endAt().limit(1);
 var screenShareDiv = document.getElementsByClassName("right")[0];
+var interval;
 
 lastViewerUrlQuery.on("child_added", function( snapshot ){
   console.log( "=======" );
@@ -63,8 +64,17 @@ lastViewerUrlQuery.on("child_removed", function(oldChildSnapShot){
   document.getElementById("iframeDiv").innerHTML = "";
   document.getElementById("stopButtonContainer").innerHTML = "";  
   document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton;
-  alert("Screen share ended.");
+  document.getElementById("alertMsgBox").innerHTML = "Screen share ended";
+  document.getElementById("alertMsgBox").style.display = "block";
+  interval = setInterval( clearMsgBox , 4000);
+
 });
+
+function clearMsgBox(){
+  document.getElementById("alertMsgBox").style.display = "none";
+  document.getElementById("alertMsgBox").innerHTML = "";
+  clearInterval( interval );
+}
 
 var screenShareData;
 function shareScreenApplet(){
@@ -107,5 +117,11 @@ function screenLeapExtension( screenShareData ){
 screenShareEnded = function(){
   roomDataRef.remove();
 }
+
+screenleap.screenShareStarted = function() {
+  document.getElementById("alertMsgBox").innerHTML = "Your screen is now shared";
+  document.getElementById("alertMsgBox").style.display = "block";
+  interval = setInterval( clearMsgBox , 4000);
+};
 
 screenleap.screenShareEnded = screenShareEnded;

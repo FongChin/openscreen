@@ -13,3 +13,10 @@ body{ background-color: #f4f4f4;}
 }
 .left { position: relative; float: left; }
 .right { float: right; margin-left: 15px; }
+#alertMsgBox{ 
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  left: 50%;
+  display: none;
+}
