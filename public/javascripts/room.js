@@ -52,7 +52,10 @@ lastViewerUrlQuery.on("child_added", function( snapshot ){
     screenShareLinkNode = document.createElement("a");
     screenShareLinkNode.href = snapshot.val().viewerUrl + "&showStop=true&showResize=true";
     screenShareLinkNode.innerText = "open the screen share window in a new window";
-    document.getElementById("stopButtonContainer").appendChild( screenShareLinkNode );
+    linkDiv = document.createElement("div");
+    linkDiv.appendChild( screenShareLinkNode );
+    linkDiv.style.margin = "5px 0";
+    document.getElementById("stopButtonContainer").appendChild( linkDiv );
   }
 
   document.getElementById("iframeDiv").innerHTML = iframeHtml;
@@ -66,7 +69,7 @@ lastViewerUrlQuery.on("child_removed", function(oldChildSnapShot){
   document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton;
   document.getElementById("alertMsgBox").innerHTML = "Screen share ended";
   document.getElementById("alertMsgBox").style.display = "block";
-  interval = setInterval( clearMsgBox , 4000);
+  interval = setInterval( clearMsgBox , 3000);
 
 });
 
@@ -101,12 +104,12 @@ function screenLeapExtension( screenShareData ){
   screenleap.checkIsExtensionInstalled(function() {
       console.log("checking extension");
       screenleap.startScreenShare('EXTENSION', screenShareData );
-      document.getElementById("stopButtonContainer").innerHTML = "<p>Click stop sharing button on the extension to stop the screen share</p>";
+      document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
       
   }, function() {
       screenleapInstallExtension(function() {
           screenleap.startScreenShare('EXTENSION', screenShareData);
-          document.getElementById("stopButtonContainer").innerHTML = "<p>Click stop sharing button on the extension to stop the screen share</p>";
+          document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
       }, function(errorMessage) {
           screenShareDiv.innerHTML = "<p>Unable to install the sharing extension for " + errorMessage + ". Visit <a href='http://screenleap.com'>screenleap.com</a> to find out more about screen sharing using screenleap.</p>";
       });
