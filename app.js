@@ -8,6 +8,7 @@ var app = express();
 app.set("views", __dirname);
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + '/public'));
+app.use(express.favicon(__dirname + 'favicon.ico'));
 
 var OTKEY = process.env.OTKEY;
 var OTSECRET = process.env.OTSECRET;

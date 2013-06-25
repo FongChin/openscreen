@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Rooms</title>
+  <title>OpenScreen | Room</title>
   <script src="http://static.opentok.com/webrtc/v2.0/js/TB.min.js" ></script>
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
@@ -46,12 +46,21 @@
   <script type="text/javascript">
     
     // detect window close so screen share can be stopped if active
-    // window.onbeforeunload = function (e) {
-    //   var e = e || window.event;
+    window.onbeforeunload = function (e) {
+      var e = e || window.event;
 
-    //   alert("stop sharing");
-      
-    // };
+      if (e) {
+        screenleap.checkIsSharing( function(){
+          // screenleap hasn't implemented this yet.
+          console.log("screenleap hasn't implemented this yet.");
+          // screenleap.stopSharing();
+        }, function(){
+          // screen is not being shared. 
+          console.log("screen is not being shared.");
+        },
+        "EXTENSION");
+      }
+    };
   
     var beforeScreenShareSource = $("#beforeScreenShare").html();
     var template1 = Handlebars.compile(beforeScreenShareSource);
