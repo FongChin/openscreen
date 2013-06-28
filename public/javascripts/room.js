@@ -39,6 +39,7 @@ var interval;
 
 lastViewerUrlQuery.on("child_added", function( snapshot ){
   console.log( "=======" );
+  console.log( snapshot.val() );
   console.log( snapshot.val().viewerUrl );
   var screenShareIframeSource = $("#screenShareIframe").html();
   var template2 = Handlebars.compile( screenShareIframeSource ); 
@@ -62,7 +63,7 @@ lastViewerUrlQuery.on("child_added", function( snapshot ){
 
 });
 
-lastViewerUrlQuery.on("child_removed", function(oldChildSnapShot){
+roomDataRef.on("child_removed", function(oldChildSnapShot){
   console.log('clearing out the divs');
   document.getElementById("iframeDiv").innerHTML = "";
   document.getElementById("stopButtonContainer").innerHTML = "";  
