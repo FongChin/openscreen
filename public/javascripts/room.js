@@ -34,7 +34,6 @@ function streamCreatedHandler(event) {
 
 var roomDataRef = new Firebase( "https://openscreen.firebaseio.com/" + roomId );
 var lastViewerUrlQuery = roomDataRef.endAt().limit(1);
-var screenShareDiv = document.getElementsByClassName("right")[0];
 var interval;
 
 lastViewerUrlQuery.on("child_added", function( snapshot ){
@@ -102,20 +101,11 @@ function shareScreenApplet(){
 }
 
 function screenLeapExtension( screenShareData ){
-  screenleap.checkIsExtensionInstalled(function() {
-      console.log("checking extension");
-      screenleap.startSharing('EXTENSION', screenShareData );
-      document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
-      
-  }, function() {
-      screenleapInstallExtension(function() {
-          screenleap.startSharing('EXTENSION', screenShareData);
-          document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
-      }, function(errorMessage) {
-          screenShareDiv.innerHTML = "<p>Unable to install the sharing extension for " + errorMessage + ". Visit <a href='http://screenleap.com'>screenleap.com</a> to find out more about screen sharing using screenleap.</p>";
-      });
+  screenShareDiv = document.getElementsByClassName("right")[0];
+  screenleap.runAfterExtensionIsInstalled(function(){
+    screenleap.startSharing( "EXTENSION" , screenShareData );
+    document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
   });
-
 }
 
 screenShareEnded = function(){
