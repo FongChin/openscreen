@@ -7,6 +7,9 @@ session.addEventListener("streamCreated", streamCreatedHandler);
 
 session.connect( apiKey, token );
 
+// screen share publisher
+isPublisher = false;
+
 function sessionConnectedHandler (event) {
   subscribeToStreams(event.streams);
   // Create publisher and start streaming into the session
@@ -36,7 +39,7 @@ var roomDataRef = new Firebase( "https://openscreen.firebaseio.com/" + roomId );
 var lastViewerUrlQuery = roomDataRef.endAt().limit(1);
 var interval;
 
-lastViewerUrlQuery.on("child_added", function( snapshot ){
+roomDataRef.on("child_added", function( snapshot ){
   console.log( "=======" );
   console.log( snapshot.val() );
   console.log( snapshot.val().viewerUrl );
@@ -45,21 +48,18 @@ lastViewerUrlQuery.on("child_added", function( snapshot ){
   var iframeHtml = template2({screenLeapViewerUrl: snapshot.val().viewerUrl });
   console.log( iframeHtml );
 
-  if ( document.getElementById("shareButtonContainer").innerHTML != "" ){
-    document.getElementById("shareButtonContainer").innerHTML = "";
+  document.getElementById("shareButtonContainer").innerHTML = "";
 
-    // add viewerUrl link
-    screenShareLinkNode = document.createElement("a");
-    screenShareLinkNode.href = snapshot.val().viewerUrl + "&showStop=true&showResize=true";
-    screenShareLinkNode.innerText = "open the screen share window in a new window";
-    linkDiv = document.createElement("div");
-    linkDiv.appendChild( screenShareLinkNode );
-    linkDiv.style.margin = "5px 0";
-    document.getElementById("stopButtonContainer").appendChild( linkDiv );
-  }
+  // add viewerUrl link
+  screenShareLinkNode = document.createElement("a");
+  screenShareLinkNode.href = snapshot.val().viewerUrl + "&showStop=true&showResize=true";
+  screenShareLinkNode.innerText = "open the screen share window in a new window";
+  linkDiv = document.createElement("div");
+  linkDiv.appendChild( screenShareLinkNode );
+  linkDiv.style.margin = "5px 0";
+  document.getElementById("stopButtonContainer").appendChild( linkDiv );
 
-  document.getElementById("iframeDiv").innerHTML = iframeHtml;
-
+  document.getElementById("iframeDiv").innerHTML = ((isPublisher)? "<h4>You are sharing screen now!</h4>" : iframeHtml );
 });
 
 roomDataRef.on("child_removed", function(oldChildSnapShot){
@@ -67,6 +67,8 @@ roomDataRef.on("child_removed", function(oldChildSnapShot){
   document.getElementById("iframeDiv").innerHTML = "";
   document.getElementById("stopButtonContainer").innerHTML = "";  
   document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton;
+
+  // notify the user that screenshare has ended
   document.getElementById("alertMsgBox").innerHTML = "Screen share ended";
   document.getElementById("alertMsgBox").style.display = "block";
   interval = setInterval( clearMsgBox , 3000);
@@ -80,37 +82,43 @@ function clearMsgBox(){
 }
 
 var screenShareData;
-function shareScreenApplet(){
+screenIsSharing = function(){
+  alert("Your screenleap extension is currently in use");
+  return false;
+}
 
+screenIsNotSharing = function(){
+  // screenleap extension is not used, then get screenshare data and start screensharing
+  console.log("screen is not sharing");
   var http = new XMLHttpRequest();
   var url = '/screenleap';
-  http.open("GET", url, true); 
 
   http.onreadystatechange = function(){
     if (http.readyState == 4 && http.status == 200 ){
       screenShareData = JSON.parse( http.responseText );
       console.log( screenShareData );
-
-      screenLeapExtension( screenShareData );
       
+      isPublisher = true;
+      roomDataRef.onDisconnect().remove();
+      // hide the screenshare button for publisher, so he doesn't click on it twice
+      document.getElementById("shareButtonContainer").innerHTML = "";
+
+      screenleap.runAfterExtensionIsInstalled(function(){
+        screenleap.startSharing( "EXTENSION" , screenShareData );
+        document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
+      });
+
       roomDataRef.push().set({ viewerUrl : screenShareData.viewerUrl });
     }
   }
-
+  http.open("GET", url, true); 
   http.send(null);  
 }
 
-function screenLeapExtension( screenShareData ){
-  screenShareDiv = document.getElementsByClassName("right")[0];
-  screenleap.runAfterExtensionIsInstalled(function(){
-    screenleap.startSharing( "EXTENSION" , screenShareData );
-    document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
-  });
+function startScreenShare(){
+  screenleap.checkIsSharing(screenIsSharing, screenIsNotSharing, "EXTENSION");      
 }
 
-screenShareEnded = function(){
-  roomDataRef.remove();
-}
 
 screenleap.screenShareStarted = function() {
   document.getElementById("alertMsgBox").innerHTML = "Your screen is now shared";
@@ -118,4 +126,6 @@ screenleap.screenShareStarted = function() {
   interval = setInterval( clearMsgBox , 4000);
 };
 
-screenleap.screenShareEnded = screenShareEnded;
+screenleap.screenShareEnded = function(){ 
+  roomDataRef.remove();
+}

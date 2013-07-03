@@ -34,7 +34,7 @@
   </div>
 
   <script id="beforeScreenShare" type="text/x-handlebars-template">
-      <button class="btn" onclick="shareScreenApplet();" >Share screen using screenleap chrome extension</button>
+      <button class="btn" onclick="startScreenShare();" >Share screen using screenleap chrome extension</button>
   </script>
 
   <script id="screenShareIframe" type="text/x-handlebars-template">
@@ -50,16 +50,8 @@
     window.onbeforeunload = function (e) {
       var e = e || window.event;
 
-      if (e) {
-        screenleap.checkIsSharing( function(){
-          // screenleap hasn't implemented this yet.
-          console.log("screenleap hasn't implemented this yet.");
-          // screenleap.stopSharing();
-        }, function(){
-          // screen is not being shared. 
-          console.log("screen is not being shared.");
-        },
-        "EXTENSION");
+      if (e && isPublisher) {
+        screenleap.stopSharing();
       }
     };
   
