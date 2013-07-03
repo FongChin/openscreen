@@ -98,17 +98,17 @@ screenIsNotSharing = function(){
       screenShareData = JSON.parse( http.responseText );
       console.log( screenShareData );
       
-      isPublisher = true;
-      roomDataRef.onDisconnect().remove();
-      // hide the screenshare button for publisher, so he doesn't click on it twice
-      document.getElementById("shareButtonContainer").innerHTML = "";
-
       screenleap.runAfterExtensionIsInstalled(function(){
+        isPublisher = true;
+        roomDataRef.onDisconnect().remove();
+
+        // hide the screenshare button for publisher, so he doesn't click on it twice
+        document.getElementById("shareButtonContainer").innerHTML = "";
         screenleap.startSharing( "EXTENSION" , screenShareData );
         document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
+        roomDataRef.push().set({ viewerUrl : screenShareData.viewerUrl });
       });
 
-      roomDataRef.push().set({ viewerUrl : screenShareData.viewerUrl });
     }
   }
   http.open("GET", url, true); 
