@@ -122,10 +122,10 @@ function startScreenShare(){
   console.log( "check if screen is sharing"); 
   // document.getElementById("shareButtonContainer").innerHTML = "";
 
-   screenleap.runAfterExtensionIsInstalled( makeScreenShareRequest );
-   // screenleap.runAfterExtensionIsInstalled(function(){
-   //  screenleap.checkIsSharing(screenIsSharing, screenIsNotSharing, "EXTENSION");      
-   //});
+   // screenleap.runAfterExtensionIsInstalled( makeScreenShareRequest );
+    screenleap.runAfterExtensionIsInstalled(function(){
+     screenleap.checkIsSharing(screenIsSharing, makeScreenShareRequest, "EXTENSION");      
+   });
 
 //  isInstalled = function(){
 //    console.log("in isIstalled");
