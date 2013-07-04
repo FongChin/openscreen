@@ -118,13 +118,19 @@ makeScreenShareRequest = function(){
   http.send(null);  
 }
 
+checkIfExtensionIsEnabled = function(){
+  screenleap.checkIsExtensionEnabled( makeScreenShareRequest, function(){
+    alert("Please enable the extension and try again");
+  });
+}
+
 function startScreenShare(){
   console.log( "check if screen is sharing"); 
   // document.getElementById("shareButtonContainer").innerHTML = "";
 
    // screenleap.runAfterExtensionIsInstalled( makeScreenShareRequest );
     screenleap.runAfterExtensionIsInstalled(function(){
-     screenleap.checkIsSharing(screenIsSharing, makeScreenShareRequest, "EXTENSION");      
+     screenleap.checkIsSharing(screenIsSharing, checkIfExtensionIsEnabled, "EXTENSION");      
    });
 
 //  isInstalled = function(){
