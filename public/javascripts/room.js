@@ -7,9 +7,6 @@ session.addEventListener("streamCreated", streamCreatedHandler);
 
 session.connect( apiKey, token );
 
-// screen share publisher
-isPublisher = false;
-
 function sessionConnectedHandler (event) {
   subscribeToStreams(event.streams);
   // Create publisher and start streaming into the session
@@ -37,6 +34,8 @@ function streamCreatedHandler(event) {
 
 var roomDataRef = new Firebase( "https://openscreen.firebaseio.com/" + roomId );
 var lastViewerUrlQuery = roomDataRef.endAt().limit(1);
+// screen share publisher
+isPublisher = false;
 var interval;
 
 roomDataRef.on("child_added", function( snapshot ){
@@ -81,14 +80,14 @@ function clearMsgBox(){
   clearInterval( interval );
 }
 
-var screenShareData;
 screenIsSharing = function(){
   alert("Your screenleap extension is currently in use");
+  document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton; 
   return false;
 }
 
-screenIsNotSharing = function(){
-  // screenleap extension is not used, then get screenshare data and start screensharing
+makeScreenShareRequest = function(){
+  // screenleap extension is not being used, then get screenshare data and start screensharing
   console.log("screen is not sharing");
   var http = new XMLHttpRequest();
   var url = '/screenleap';
@@ -96,27 +95,60 @@ screenIsNotSharing = function(){
   http.onreadystatechange = function(){
     if (http.readyState == 4 && http.status == 200 ){
       screenShareData = JSON.parse( http.responseText );
+      
       console.log( screenShareData );
       
-      screenleap.runAfterExtensionIsInstalled(function(){
-        isPublisher = true;
-        roomDataRef.onDisconnect().remove();
+      isPublisher = true;
+      // event listener for active screenshare only for publishers
+      roomDataRef.onDisconnect().remove();
 
-        // hide the screenshare button for publisher, so he doesn't click on it twice
-        document.getElementById("shareButtonContainer").innerHTML = "";
-        screenleap.startSharing( "EXTENSION" , screenShareData );
-        document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
-        roomDataRef.push().set({ viewerUrl : screenShareData.viewerUrl });
-      });
+      // hide the screenshare button for publisher, so he doesn't click on it twice
+      document.getElementById("shareButtonContainer").innerHTML = "";
 
+      // start the screen share
+      screenleap.startSharing( "EXTENSION" , screenShareData );
+      document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
+      roomDataRef.push().set({ viewerUrl : screenShareData.viewerUrl });
+
+    }else{
+      document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton;
     }
   }
-  http.open("GET", url, true); 
+  http.open("POST", url, true); 
   http.send(null);  
 }
 
 function startScreenShare(){
-  screenleap.checkIsSharing(screenIsSharing, screenIsNotSharing, "EXTENSION");      
+  console.log( "check if screen is sharing"); 
+  document.getElementById("shareButtonContainer").innerHTML = "";
+
+   screenleap.runAfterExtensionIsInstalled( makeScreenShareRequest );
+   // screenleap.runAfterExtensionIsInstalled(function(){
+   //  screenleap.checkIsSharing(screenIsSharing, screenIsNotSharing, "EXTENSION");      
+   //});
+
+//  isInstalled = function(){
+//    console.log("in isIstalled");
+//    screenleap.checkIsExtensionEnabled(function(){
+//      console.log("extension is installed and enabled");
+//      // need to check if the extension is in use. if not, share the screen
+//    }, function(){
+//      console.log("extension is installed but not enabled"); 
+//    });
+//  }
+//
+//  isNotInstalled = function(){
+//    console.log("extension is not installed yo, imma gon try to install");
+//    screenleap.installExtension(function(){
+//      console.log("successfully installed");
+//    }, function(e){
+//      console.log("we failed at installinggg");
+//      console.log(e);
+//    }
+//    );
+//  }
+//  screenleap.checkIsExtensionInstalled( isInstalled, isNotInstalled );
+
 }
 
 

@@ -38,7 +38,7 @@ app.get('/room/:id', function(req, res){
   }
 });
 
-app.get('/screenleap', function(req, res){
+app.post('/screenleap', function(req, res){
   var post_options = {
     host: 'api.screenleap.com',
     path: '/v2/screen-shares',
