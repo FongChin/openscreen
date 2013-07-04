@@ -120,7 +120,7 @@ makeScreenShareRequest = function(){
 
 function startScreenShare(){
   console.log( "check if screen is sharing"); 
-  document.getElementById("shareButtonContainer").innerHTML = "";
+  // document.getElementById("shareButtonContainer").innerHTML = "";
 
    screenleap.runAfterExtensionIsInstalled( makeScreenShareRequest );
    // screenleap.runAfterExtensionIsInstalled(function(){
