@@ -1,16 +1,17 @@
-// 
+//** 
 //  JS for screen sharing using extension
+//**
 //
 // Enable console logs for debugging
 TB.setLogLevel(TB.DEBUG);
 
-session = TB.initSession( sessionId );
+session = TB.initSession(sessionId);
 session.addEventListener("sessionConnected", sessionConnectedHandler);
 session.addEventListener("streamCreated", streamCreatedHandler);
 
-session.connect( apiKey, token );
+session.connect(apiKey, token);
 
-function sessionConnectedHandler (event) {
+function sessionConnectedHandler(event) {
   subscribeToStreams(event.streams);
   // Create publisher and start streaming into the session
   var publisher = TB.initPublisher(apiKey, 'myPublisherDiv');
@@ -39,16 +40,15 @@ var roomDataRef = new Firebase( "https://openscreen.firebaseio.com/" + roomId );
 var lastViewerUrlQuery = roomDataRef.endAt().limit(1);
 // screen share publisher
 isPublisher = false;
-var interval;
 
-roomDataRef.on("child_added", function( snapshot ){
-  console.log( "=======" );
-  console.log( snapshot.val() );
-  console.log( snapshot.val().viewerUrl );
+roomDataRef.on("child_added", function(snapshot){
+  console.log("=======");
+  console.log(snapshot.val());
+  console.log(snapshot.val().viewerUrl);
   var screenShareIframeSource = $("#screenShareIframe").html();
   var template2 = Handlebars.compile( screenShareIframeSource ); 
   var iframeHtml = template2({screenLeapViewerUrl: snapshot.val().viewerUrl });
-  console.log( iframeHtml );
+  console.log(iframeHtml);
 
   document.getElementById("shareButtonContainer").innerHTML = "";
 
@@ -83,12 +83,6 @@ roomDataRef.on("child_removed", function(oldChildSnapShot){
 
   alertMsg("Screen share ended");
 });
-
-screenIsSharing = function(){
-  alert("Your screenleap extension is currently in use");
-  document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton; 
-  return false;
-}
 
 function screenIsNotSharing(){
   // screenleap extension is not being used, then get screenshare data and start screensharing
@@ -150,10 +144,4 @@ function startScreenShare (){
 }
 
 
-screenleap.screenShareStarted = function() {
-  alertMsg("Your screen is now shared");
-};
 
-screenleap.screenShareEnded = function(){ 
-  roomDataRef.remove();
-}
