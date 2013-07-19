@@ -12,11 +12,27 @@ body{ background-color: #f4f4f4;}
   border: solid 15px #deded2;
 }
 .left { position: relative; float: left; }
+
 .right { float: right; margin-left: 15px; }
-#alertMsgBox{ 
-  position: fixed;
-  top: 0;
-  z-index: 2;
+
+#center{
+  text-align: center;
+  padding: 20px;
+}
+
+pre{
+  width: 550px;
+  display: block;
+  margin: auto;
+}
+
+#alertMsgWrapper{
+  position: absolute;
   left: 50%;
   display: none;
+}
+
+#alertMsgBox{ 
+  position: relative;
+  left: -50%;
 }

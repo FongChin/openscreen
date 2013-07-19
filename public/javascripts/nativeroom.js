@@ -1,6 +1,6 @@
 // 
-//  JS for screen sharing using extension
-//
+//  JS for screen sharing using applet
+//  
 // Enable console logs for debugging
 TB.setLogLevel(TB.DEBUG);
 
@@ -64,25 +64,24 @@ roomDataRef.on("child_added", function( snapshot ){
   document.getElementById("iframeDiv").innerHTML = ((isPublisher)? "<h4>You are sharing screen now!</h4>" : iframeHtml );
 });
 
-function alertMsg(html){
-  html += " <button class='btn btn-mini' id='hideBox' onclick='hideMsgBox();' >Okay</button>"
-  document.getElementById("alertMsgBox").innerHTML = html;
-  document.getElementById("alertMsgWrapper").style.display = "inline-table";
-}
-
-function hideMsgBox(){
-  document.getElementById("alertMsgWrapper").style.display = "none";
-  document.getElementById("alertMsgBox").innerHTML = "";
-}
-
 roomDataRef.on("child_removed", function(oldChildSnapShot){
   console.log('clearing out the divs');
   document.getElementById("iframeDiv").innerHTML = "";
   document.getElementById("stopButtonContainer").innerHTML = "";  
   document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton;
 
-  alertMsg("Screen share ended");
+  // notify the user that screenshare has ended
+  document.getElementById("alertMsgBox").innerHTML = "Screen share ended";
+  document.getElementById("alertMsgBox").style.display = "block";
+  interval = setInterval( clearMsgBox , 3000);
+
 });
+
+function clearMsgBox(){
+  document.getElementById("alertMsgBox").style.display = "none";
+  document.getElementById("alertMsgBox").innerHTML = "";
+  clearInterval( interval );
+}
 
 screenIsSharing = function(){
   alert("Your screenleap extension is currently in use");
@@ -90,7 +89,7 @@ screenIsSharing = function(){
   return false;
 }
 
-function screenIsNotSharing(){
+makeScreenShareRequest = function(){
   // screenleap extension is not being used, then get screenshare data and start screensharing
   console.log("screen is not sharing");
   var http = new XMLHttpRequest();
@@ -110,7 +109,7 @@ function screenIsNotSharing(){
       document.getElementById("shareButtonContainer").innerHTML = "";
 
       // start the screen share
-      screenleap.startSharing( "EXTENSION" , screenShareData );
+      screenleap.startSharing( "NATIVE" , screenShareData );
       document.getElementById("stopButtonContainer").innerHTML = "<button class='btn' onclick='screenleap.stopSharing()'>Stop Sharing</button>";
       roomDataRef.push().set({ viewerUrl : screenShareData.viewerUrl });
 
@@ -122,36 +121,25 @@ function screenIsNotSharing(){
   http.send(null);  
 }
 
-function screenIsSharing(){
-  // notify the user that screenshare extension is in use 
-  alertMsg("Your screenleap extension is in use.");
+checkIfExtensionIsEnabled = function(){
+  screenleap.checkIsExtensionEnabled( makeScreenShareRequest, function(){
+    alert("Please enable the extension and try again");
+  });
 }
 
-function startScreenShare (){
+function startScreenShare(){
   console.log( "check if screen is sharing"); 
+  // document.getElementById("shareButtonContainer").innerHTML = "";
 
-    isInstalled = function(){
-      screenleap.checkIsExtensionEnabled(function(){
-        console.log("extension is installed and enabled");
-        // need to check if the extension is in use. if not, share the screen
-         screenleap.checkIsSharing(screenIsSharing, screenIsNotSharing, "EXTENSION"); 
-      }, function(){
-        console.log("extension is installed but not enabled"); 
-        alertMsg("Your screenleap extension is installed but not enabled. Please enable to share screen.");
-      });
-    }
-  
-    isNotInstalled = function(){
-      temphtml = "Extension is not installed. <a target='_blank' href='https://chrome.google.com/webstore/detail/screenleap/hpcipbhehomfgjbgnajdhiahhdeeffbg'>Install</a> the extension and try again.";
-      alertMsg(temphtml);
-    }
-    screenleap.checkIsExtensionInstalled( isInstalled, isNotInstalled );
+  makeScreenShareRequest(); 
 
 }
 
 
 screenleap.screenShareStarted = function() {
-  alertMsg("Your screen is now shared");
+  document.getElementById("alertMsgBox").innerHTML = "Your screen is now shared";
+  document.getElementById("alertMsgBox").style.display = "block";
+  interval = setInterval( clearMsgBox , 4000);
 };
 
 screenleap.screenShareEnded = function(){ 

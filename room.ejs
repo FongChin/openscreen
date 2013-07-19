@@ -25,12 +25,16 @@
   </script>
 </head>
 <body>
-  <div id="alertMsgBox" class="alert alert-success">
+  <div id="alertMsgWrapper" style="position: absolute; left: 50%;">
+    <div id="alertMsgBox" class="alert alert-success"></div>
   </div>
-  <center><h2>Share the url with your friend to chat <pre style="width: 550px;" id="url"></pre></h2></center>
+  <div id="center">
+    <h2>Share the url with your friend to chat</h2>
+    <pre id="url"></pre>
+  </div>
   <div id="wrapper">
     <div class="left">
-    <button class="btn" onclick="session.disconnect();">stop publishing</button>
+      <button class="btn" onclick="session.disconnect();">stop publishing</button>
       <div id="myPublisherDiv"></div>
       <div id="videoDiv" ></div>
     </div>
@@ -44,35 +48,35 @@
   </div>
 
   <script id="beforeScreenShare" type="text/x-handlebars-template">
-      <button class="btn" onclick="startScreenShare();" >Share screen using screenleap chrome extension</button>
+    <button class="btn" onclick="startScreenShare();" >Share screen using screenleap chrome extension</button>
   </script>
 
   <script id="screenShareIframe" type="text/x-handlebars-template">
-      <iframe src="{{screenLeapViewerUrl}}" width="720px" height="700px">
-          <p>Your browser does not support iframes.</p>
-        </iframe>
+    <iframe src="{{screenLeapViewerUrl}}" width="720px" height="700px">
+      <p>Your browser does not support iframes.</p>
+    </iframe>
   </script>
   <script type="text/javascript">
-    
+
     // detect window close so screen share can be stopped if active
-    window.onbeforeunload = function (e) {
-      var e = e || window.event;
+  window.onbeforeunload = function (e) {
+    var e = e || window.event;
 
-      if (e && isPublisher) {
-        screenleap.stopSharing();
-      }
-    };
-    var beforeScreenShareSource = $("#beforeScreenShare").html();
-    var template1 = Handlebars.compile(beforeScreenShareSource);
-    var htmlForScreenShareButton = template1();
+    if (e && isPublisher) {
+      screenleap.stopSharing();
+    }
+  };
+var beforeScreenShareSource = $("#beforeScreenShare").html();
+var template1 = Handlebars.compile(beforeScreenShareSource);
+var htmlForScreenShareButton = template1();
 
-    document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton;
-    apiKey = "<%= OTkey %>";
-    token = "<%= token %>";
-    sessionId = "<%= sessionId %>";
-    roomId = "<%= roomId %>";
-    document.getElementById("url").textContent = window.location.href;
-  </script>
-  <script src="/javascripts/room.js" type="text/javascript"></script>
+document.getElementById("shareButtonContainer").innerHTML = htmlForScreenShareButton;
+apiKey = "<%= OTkey %>";
+token = "<%= token %>";
+sessionId = "<%= sessionId %>";
+roomId = "<%= roomId %>";
+document.getElementById("url").textContent = window.location.href;
+</script>
+<script src="/javascripts/room.js" type="text/javascript"></script>
 </body>
 </html>
