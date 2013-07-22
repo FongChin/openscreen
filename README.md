@@ -9,5 +9,5 @@ Resources
 * Screenleap API v2 Docs for extension: <https://www.screenleap.com/api/v2/presenter#presenter-browser-extension>
 * Firebase NodeJs Docs: <https://www.firebase.com/docs/nodejs-quickstart.html>
 
-View the demo at <openscreen.herokuapp.com>
+View the demo at <http://openscreen.herokuapp.com>
 
