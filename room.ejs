@@ -72,7 +72,7 @@
     window.onbeforeunload = function (e) {
       var e = e || window.event;
 
-      if (e && isPublisher) {
+      if (e && isPublisher && screenIsSharing) {
         screenleap.stopSharing();
       }
     };

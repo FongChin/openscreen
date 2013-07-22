@@ -9,35 +9,33 @@ app.set("views", __dirname);
 app.set("view engine", "ejs");
 app.use(express.favicon(__dirname + '/public/favicon.ico'));
 app.use(express.static(__dirname + '/public'));
-app.use(express.favicon(__dirname + '/public/favicon.ico'));
 
 var OTKEY = process.env.OTKEY;
 var OTSECRET = process.env.OTSECRET;
 
 var OpenTok = require('opentok');
-var opentok = new OpenTok.OpenTokSDK( OTKEY , OTSECRET );
+var opentok = new OpenTok.OpenTokSDK(OTKEY , OTSECRET);
 
 var urlSessions = {};
-var screenShareData;
 
 app.get('/', function(req, res){
   res.render("index", {});
 });
 
 app.get('/room/:id', function(req, res){
-  console.log( process.env.OTKEY );
-  if ( urlSessions[ req.params.id ] == undefined ){
+  if (urlSessions[req.params.id] == undefined){
     opentok.createSession(function(result){
       sessionId = result;
-      urlSessions[ req.params.id ] = sessionId;
-      sendResponse( sessionId, res, req.params.id );
+      urlSessions[req.params.id] = sessionId;
+      sendResponse(sessionId, res, req.params.id);
     });
   }else{
-    sessionId = urlSessions[ req.params.id ];
-    sendResponse( sessionId, res, req.params.id );
+    sessionId = urlSessions[req.params.id];
+    sendResponse(sessionId, res, req.params.id);
   }
 });
 
+// get JSON response from screenleap API
 app.post('/screenleap', function(req, res){
   var post_options = {
     host: 'api.screenleap.com',
@@ -59,7 +57,8 @@ app.post('/screenleap', function(req, res){
   post_req.end();
 });
 
-function sendResponse( sessionId, response, id ){
+// generate token and send data to room.ejs
+function sendResponse(sessionId, response, id){
   var token = opentok.generateToken({sessionId: sessionId});
   data = {
     OTkey: OTKEY,
@@ -67,8 +66,8 @@ function sendResponse( sessionId, response, id ){
     sessionId: sessionId,
     roomId: id
   }
-  response.render( "room", data );
+  response.render("room", data);
 }
 
-app.listen( process.env.PORT || 3000 );
+app.listen(process.env.PORT || 3000);
 
