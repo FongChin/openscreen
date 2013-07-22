@@ -3,7 +3,7 @@
 OpenTok webRTC API is used for video chat, screenleap API to share screen via screenleap chrome extension and Firebase API to save app's data.
 
 
-Resources
+## Resources
 * Opentok webRTC Docs: <http://tokbox.com/opentok/docs/concepts/WebRTC.html>
 * Opentok NodeJS library: <https://github.com/opentok/opentok-node>
 * Screenleap API v2 Docs for extension: <https://www.screenleap.com/api/v2/presenter#presenter-browser-extension>
