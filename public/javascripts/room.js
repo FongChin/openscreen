@@ -140,8 +140,7 @@ function isInstalled(){
 }
 
 function isNotInstalled(){
-  temphtml = "Extension is not installed. <a target='_blank' href='https://chrome.google.com/webstore/detail/screenleap/hpcipbhehomfgjbgnajdhiahhdeeffbg'>Install</a> the extension and try again.";
-  alertMsg(temphtml);
+  screenleap.installExtension(isInstalled, function(){});
 }
 
 function startScreenShare (){
