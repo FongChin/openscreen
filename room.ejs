@@ -34,7 +34,6 @@
   </div>
   <div id="wrapper">
     <div class="left">
-      <button class="btn" onclick="session.disconnect();">stop publishing</button>
       <div id="myPublisherDiv"></div>
       <div id="videoDiv" ></div>
     </div>
@@ -48,7 +47,7 @@
   </div>
 
   <script id="beforeScreenShare" type="text/x-handlebars-template">
-    <button class="btn" onclick="startScreenShare();" >Share screen using screenleap chrome extension</button>
+    <button class="btn" onclick="startScreenShareButtonClicked();" >Share screen using screenleap chrome extension</button>
   </script>
 
   <script id="screenShareIframe" type="text/x-handlebars-template">

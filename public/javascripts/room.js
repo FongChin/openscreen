@@ -80,9 +80,11 @@ roomDataRef.on("child_removed", function(oldChildSnapShot){
 
   alertMsg("Screen share ended");
   screenIsSharing = false;
+  isPublisher = false;
 });
 
 function alertMsg(html){
+  document.getElementById("alertMsgBox").innerHTML = "";
   html += " <button class='btn btn-mini' id='hideBox' onclick='hideMsgBox();' >Okay</button>"
   document.getElementById("alertMsgBox").innerHTML = html;
   document.getElementById("alertMsgWrapper").style.display = "inline-table";
@@ -93,7 +95,7 @@ function hideMsgBox(){
   document.getElementById("alertMsgBox").innerHTML = "";
 }
 
-function screenIsNotSharing(){
+function startSharingScreen(){
   // screenleap extension is not being used. Get screenshare data and start screensharing
   var http = new XMLHttpRequest();
   var url = '/screenleap';
@@ -123,30 +125,30 @@ function screenIsNotSharing(){
   http.send(null);  
 }
 
-function screenIsSharing(){
+function extensionInUse(){
   // notify the user that screenshare extension is in use 
   alertMsg("Your screenleap extension is in use.");
 }
 
-function isInstalled(){
+function initiateScreenShare(){
   screenleap.checkIsExtensionEnabled(function(){
     // extension is installed and enabled
     // next, need to check if the extension is in use. if not, share the screen
-     screenleap.checkIsSharing(screenIsSharing, screenIsNotSharing, "EXTENSION"); 
+     screenleap.checkIsSharing(extensionInUse, startSharingScreen, "EXTENSION"); 
   }, function(){
     // extension is installed but not enabled
     alertMsg("Your screenleap extension is installed but not enabled. Please enable to share screen.");
   });
 }
 
-function isNotInstalled(){
-  screenleap.installExtension(isInstalled, function(){});
+function installExtension(){
+  screenleap.installExtension(initiateScreenShare, function(){});
 }
 
-function startScreenShare (){
+function startScreenShareButtonClicked(){
   // check if screenleap extension is installed
-  // isInstalled function will be called if the extension is installed 
-  // Otherwise, call isNotInstalled()
-  screenleap.checkIsExtensionInstalled(isInstalled, isNotInstalled);
+  // initiateScreenShare function will be called if the extension is installed 
+  // Otherwise, call installExtension()
+  screenleap.checkIsExtensionInstalled(initiateScreenShare, installExtension);
 }
 
