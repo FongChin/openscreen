@@ -63,11 +63,12 @@ roomDataRef.on("child_added", function(snapshot){
   // add viewerUrl link
   screenShareLinkNode = document.createElement("a");
   screenShareLinkNode.href = snapshot.val().viewerUrl + "&showStop=true&showResize=true";
+  screenShareLinkNode.target = "_blank";
   screenShareLinkNode.innerText = "open the screen share window in a new window";
   linkDiv = document.createElement("div");
-  linkDiv.appendChild( screenShareLinkNode );
+  linkDiv.appendChild(screenShareLinkNode);
   linkDiv.style.margin = "5px 0";
-  document.getElementById("stopButtonContainer").appendChild( linkDiv );
+  document.getElementById("stopButtonContainer").appendChild(linkDiv);
 
   document.getElementById("iframeDiv").innerHTML = ((isPublisher)? "<h4>You are sharing screen now!</h4>" : iframeHtml );
 });
