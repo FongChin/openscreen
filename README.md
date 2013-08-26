@@ -11,5 +11,5 @@ OpenTok webRTC API is used for video chat, screenleap API to share screen via sc
 
 View the demo at <http://openscreen.herokuapp.com>
 
-To-Do List
+## To-Do List
 - [ ] Screenleap API v2 was updated during the weekend of August 17. The current version of this project needs to be modified according to the new update.
